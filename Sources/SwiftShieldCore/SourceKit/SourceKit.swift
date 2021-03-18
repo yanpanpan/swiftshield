@@ -205,6 +205,7 @@ public struct sourcekitd_keys {
     let usr: sourcekitd_uid_t
     let typename: sourcekitd_uid_t
     let annotated_decl: sourcekitd_uid_t
+    /**  */
     let doc_full_as_xml: sourcekitd_uid_t
     let syntactic_only: sourcekitd_uid_t
     let substructure: sourcekitd_uid_t

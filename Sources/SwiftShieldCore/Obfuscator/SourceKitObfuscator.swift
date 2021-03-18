@@ -74,8 +74,8 @@ extension SourceKitObfuscator {
             return
         }
         guard let rawName: String = dict[keys.name],
-              let usr: String = dict[keys.usr] else
-        {
+              let usr: String = dict[keys.usr]
+        else {
             return
         }
 
@@ -145,15 +145,29 @@ extension SourceKitObfuscator {
         var referenceArray = [Reference]()
         index.response.recurseEntities { [unowned self] dict in
             guard let kindId: SKUID = dict[self.keys.kind],
-                kindId.referenceType() != nil || kindId.declarationType() != nil,
-                let rawName: String = dict[self.keys.name],
-                let usr: String = dict[self.keys.usr],
-                self.dataStore.processedUsrs.contains(usr),
-                let line: Int = dict[self.keys.line],
-                let column: Int = dict[self.keys.column],
-                dict.isReferencingInternalFramework(dataStore: self.dataStore) == false else {
+                  kindId.referenceType() != nil || kindId.declarationType() != nil,
+                  let rawName: String = dict[self.keys.name],
+                  rawName.contains("__talkgo"),
+                  let usr: String = dict[self.keys.usr],
+                  usr != "s:Sb",
+                  self.dataStore.processedUsrs.contains(usr),
+                  let line: Int = dict[self.keys.line],
+                  let column: Int = dict[self.keys.column],
+                  dict.isReferencingInternalFramework(dataStore: self.dataStore) == false
+            else {
                 return
             }
+
+//            if let skDics: SKResponseArray = dict[self.keys.entities],
+//
+//               skDics.count > 0
+//            {
+//                let usr: SKResponseDictionary = skDics[0]
+//                if usr [self.keys.usr] == "s:Sb" {
+//
+//                    return
+//                }
+//            }
 
             let name = rawName.removingParameterInformation
             let obfuscatedName = self.obfuscate(name: name)
@@ -229,8 +243,9 @@ extension SourceKitObfuscator {
         while currentCharIndex < charArray.count, currentReferenceIndex < sortedReferences.count {
             let reference = sortedReferences[currentReferenceIndex]
             if previousReference != nil,
-                reference.line == previousReference.line,
-                reference.column == previousReference.column {
+               reference.line == previousReference.line,
+               reference.column == previousReference.column
+            {
                 // Avoid duplicates.
                 currentReferenceIndex += 1
             }
@@ -280,7 +295,7 @@ extension SourceKitObfuscator {
         req[keys.compilerargs] = module.compilerArguments
         req[keys.usr] = usr
         // We have to store the file of the USR because it looks CursorInfo doesn't returns USRs if you use the wrong one
-        //, except if it's a closed source framework. No idea why it works like that.
+        // , except if it's a closed source framework. No idea why it works like that.
         // Hopefully this won't break in the future.
         let file: File = dataStore.fileForUSR[usr] ?? module.sourceFiles.first!
         req[keys.sourcefile] = file.path
