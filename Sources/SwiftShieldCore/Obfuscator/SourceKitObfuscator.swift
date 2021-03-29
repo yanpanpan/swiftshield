@@ -5,9 +5,11 @@ final class SourceKitObfuscator: ObfuscatorProtocol {
     let logger: LoggerProtocol
     let dataStore: SourceKitObfuscatorDataStore
     let ignorePublic: Bool
+    let suffixTag: String
     weak var delegate: ObfuscatorDelegate?
 
-    init(sourceKit: SourceKit, logger: LoggerProtocol, dataStore: SourceKitObfuscatorDataStore, ignorePublic: Bool) {
+    init(sourceKit: SourceKit, logger: LoggerProtocol, dataStore: SourceKitObfuscatorDataStore,suffixTag:String,ignorePublic: Bool) {
+        self.suffixTag = suffixTag
         self.sourceKit = sourceKit
         self.logger = logger
         self.dataStore = dataStore
@@ -156,7 +158,7 @@ extension SourceKitObfuscator {
             guard let kindId: SKUID = dict[self.keys.kind],
                   kindId.referenceType() != nil || kindId.declarationType() != nil,
                   let rawName: String = dict[self.keys.name],
-                  rawName.contains("__talkgo"),
+                  suffixTag.isEmpty || rawName.contains(suffixTag),
                   let usr: String = dict[self.keys.usr],
                   usr != "s:Sb",
                   self.dataStore.processedUsrs.contains(usr),

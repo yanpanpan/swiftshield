@@ -8,7 +8,8 @@ public enum SwiftSwiftAssembler {
         ignorePublic: Bool,
         dryRun: Bool,
         verbose: Bool,
-        printSourceKitQueries: Bool
+        printSourceKitQueries: Bool,
+        suffixTag: String
     ) -> SwiftShieldController {
         let logger = Logger(
             verbose: verbose,
@@ -30,6 +31,7 @@ public enum SwiftSwiftAssembler {
             sourceKit: sourceKit,
             logger: logger,
             dataStore: .init(),
+            suffixTag: suffixTag,
             ignorePublic: ignorePublic
         )
 

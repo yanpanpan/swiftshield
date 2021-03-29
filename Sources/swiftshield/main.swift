@@ -6,6 +6,7 @@ enum ObfuscatorConfig {
     static let scheme = "talkgo"
     static let projectPath = "/Users/sam/Documents/miqu/src/talkgo.xcworkspace"
     static let ignoreTargets = "Pods-talkgo,ActiveLabel,AFNetworking,AlicloudRPSDK,AlicloudSecurityGuardSDK,AlicloudSGMain,AlicloudSGSecurityBody,AliyunOSSiOS,Bugly,CCHLinkTextView,CL_ShanYanSDK,CocoaLumberjack,CocoaSecurity,FLAnimatedImage,FMDB,GCDWebServer,HappyDNS,HMSegmentedControl,IGListKit,ios_pod_category,LookinServer,lottie-ios,MJRefresh,PINCache,PINOperation,PromiseKit,Protobuf,PureLayout,Qiniu,SDWebImage,SensorsAnalyticsSDK,SPPermissions,SQLiteRepairKit,SSZipArchive,SVProgressHUD,SwiftyUserDefaults,SwipeCellKit,TXIMSDK_iOS,UMCAnalytics,UMCCommon,UMCCommonLog,Valet,WCDB.swift,WCDBOptimizedSQLCipher,YYImage,ZLPhotoBrowser,sqlcipher,WCDBSwift,Pods_talkgo,sqliterk,Lottie"
+    static let obfuscatorTag = "__talkgo"
 }
 
 Swiftshield.main(
@@ -13,7 +14,8 @@ Swiftshield.main(
         "obfuscate",
         "--project-file", ObfuscatorConfig.projectPath,
         "--scheme", ObfuscatorConfig.scheme,
-        "--ignore-targets", ObfuscatorConfig.ignoreTargets
+        "--ignore-targets", ObfuscatorConfig.ignoreTargets,
+        "--suffix-tag", ObfuscatorConfig.obfuscatorTag
     ]
 )
 
@@ -38,6 +40,9 @@ extension Swiftshield {
         @Flag(help: "Don't obfuscate content that is 'public' or 'open' (a.k.a 'SDK Mode').")
         var ignorePublic: Bool
 
+        @Option(name: .long, help: "The path to your app's main .xcodeproj/.xcworkspace file.")
+        var suffixTag: String = ""
+
         @Flag(name: .shortAndLong, help: "Prints additional information.")
         var verbose: Bool
 
@@ -55,7 +60,8 @@ extension Swiftshield {
                 ignorePublic: ignorePublic,
                 dryRun: dryRun,
                 verbose: verbose,
-                printSourceKitQueries: printSourcekit
+                printSourceKitQueries: printSourcekit,
+                suffixTag: suffixTag
             )
             try runner.run()
         }
