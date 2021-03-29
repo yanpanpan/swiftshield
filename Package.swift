@@ -10,7 +10,9 @@ let package = Package(
         .library(name: "SwiftShieldCore", targets: ["SwiftShieldCore"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-argument-parser.git", .exact("0.0.2")),
+        .package(url: "https://github.com/apple/swift-argument-parser.git", .upToNextMinor(from: "0.3.1")),
+        .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.2"),
+
     ],
     targets: [
         // Csourcekitd: C modules wrapper for sourcekitd.
@@ -26,7 +28,10 @@ let package = Package(
         ),
         .target(
             name: "SwiftShieldCore",
-            dependencies: ["Csourcekitd", .product(name: "ArgumentParser", package: "swift-argument-parser")]
+            dependencies: ["Csourcekitd",
+                           .product(name: "ArgumentParser", package: "swift-argument-parser"),
+                           .product(name: "SourceKittenFramework", package: "SourceKitten"),
+                           "Yams"]
         ),
         .testTarget(
             name: "SwiftShieldTests",

@@ -2,6 +2,21 @@ import ArgumentParser
 import Foundation
 import SwiftShieldCore
 
+enum ObfuscatorConfig {
+    static let scheme = "talkgo"
+    static let projectPath = "/Users/sam/Documents/miqu/src/talkgo.xcworkspace"
+    static let ignoreTargets = "Pods-talkgo,ActiveLabel,AFNetworking,AlicloudRPSDK,AlicloudSecurityGuardSDK,AlicloudSGMain,AlicloudSGSecurityBody,AliyunOSSiOS,Bugly,CCHLinkTextView,CL_ShanYanSDK,CocoaLumberjack,CocoaSecurity,FLAnimatedImage,FMDB,GCDWebServer,HappyDNS,HMSegmentedControl,IGListKit,ios_pod_category,LookinServer,lottie-ios,MJRefresh,PINCache,PINOperation,PromiseKit,Protobuf,PureLayout,Qiniu,SDWebImage,SensorsAnalyticsSDK,SPPermissions,SQLiteRepairKit,SSZipArchive,SVProgressHUD,SwiftyUserDefaults,SwipeCellKit,TXIMSDK_iOS,UMCAnalytics,UMCCommon,UMCCommonLog,Valet,WCDB.swift,WCDBOptimizedSQLCipher,YYImage,ZLPhotoBrowser,sqlcipher,WCDBSwift,Pods_talkgo,sqliterk,Lottie"
+}
+
+Swiftshield.main(
+    [
+        "obfuscate",
+        "--project-file", ObfuscatorConfig.projectPath,
+        "--scheme", ObfuscatorConfig.scheme,
+        "--ignore-targets", ObfuscatorConfig.ignoreTargets
+    ]
+)
+
 struct Swiftshield: ParsableCommand {
     static var configuration = CommandConfiguration(
         abstract: "SwiftShield 4.1.1",
@@ -33,7 +48,6 @@ extension Swiftshield {
         var printSourcekit: Bool
 
         func run() throws {
-//            fuck()
             let modulesToIgnore = Set((ignoreTargets ?? "").components(separatedBy: ","))
             let runner = SwiftSwiftAssembler.generate(
                 projectPath: projectFile, scheme: scheme,
@@ -62,23 +76,3 @@ extension Swiftshield {
         }
     }
 }
-
-Swiftshield.main(
-    [
-        "obfuscate",
-        "--project-file", "/Users/sam/Desktop/Shield_obfuscator/Shield_obfuscator.xcworkspace",
-        "--scheme", "Shield_obfuscator",
-        "--ignore-public",
-//        "--ignore-targets", "Alamofire,Pods-Shield_obfuscator"
-    ]
-)
-
-//Swiftshield.main(
-//    [
-//        "obfuscate",
-//        "--project-file", "/Users/sam/Documents/miqu/src/talkgo.xcworkspace",
-//        "--scheme", "talkgo",
-////        "--ignore-public",
-//        "--ignore-targets", "Pods-talkgo,ActiveLabel,AFNetworking,AlicloudRPSDK,AlicloudSecurityGuardSDK,AlicloudSGMain,AlicloudSGSecurityBody,AliyunOSSiOS,Bugly,CCHLinkTextView,CL_ShanYanSDK,CocoaLumberjack,CocoaSecurity,FLAnimatedImage,FMDB,GCDWebServer,HappyDNS,HMSegmentedControl,IGListKit,ios_pod_category,LookinServer,lottie-ios,MJRefresh,PINCache,PINOperation,PromiseKit,Protobuf,PureLayout,Qiniu,SDWebImage,SensorsAnalyticsSDK,SPPermissions,SQLiteRepairKit,SSZipArchive,SVProgressHUD,SwiftyUserDefaults,SwipeCellKit,TXIMSDK_iOS,UMCAnalytics,UMCCommon,UMCCommonLog,Valet,WCDB.swift,WCDBOptimizedSQLCipher,YYImage,ZLPhotoBrowser,sqlcipher,WCDBSwift,Pods_talkgo,sqliterk,Lottie"
-//    ]
-//)

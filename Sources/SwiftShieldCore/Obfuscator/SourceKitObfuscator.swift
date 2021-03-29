@@ -31,6 +31,9 @@ extension SourceKitObfuscator {
         module.compilerArguments.forEach(compilerArguments.append(_:))
         try module.sourceFiles.sorted { $0.path < $1.path }.forEach { file in
             logger.log("--- Indexing: \(file.name)")
+            if file.name.hasSuffix("ChatMessage.swift") {
+                return
+            }
             let req = SKRequestDictionary(sourcekitd: sourceKit)
             req[keys.request] = requests.indexsource
             req[keys.sourcefile] = file.path
@@ -142,6 +145,12 @@ extension SourceKitObfuscator {
 
     func obfuscate(index: IndexedFile) throws {
         logger.log("--- Obfuscating \(index.file.name)")
+        
+        // 这个文件会导致索引失败，所以直接忽略
+        if index.file.name.hasSuffix("ChatMessage.swift") {
+            return
+        }
+
         var referenceArray = [Reference]()
         index.response.recurseEntities { [unowned self] dict in
             guard let kindId: SKUID = dict[self.keys.kind],
@@ -157,17 +166,6 @@ extension SourceKitObfuscator {
             else {
                 return
             }
-
-//            if let skDics: SKResponseArray = dict[self.keys.entities],
-//
-//               skDics.count > 0
-//            {
-//                let usr: SKResponseDictionary = skDics[0]
-//                if usr [self.keys.usr] == "s:Sb" {
-//
-//                    return
-//                }
-//            }
 
             let name = rawName.removingParameterInformation
             let obfuscatedName = self.obfuscate(name: name)
